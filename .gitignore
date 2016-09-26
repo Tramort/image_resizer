@@ -1,0 +1,10 @@
+*.pyc
+__pycache__
+/*.suo
+/obj
+/.vs
+/env
+/bin
+/db.sqlite3
+/web.config
+/web.debug.config
