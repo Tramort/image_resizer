@@ -4,18 +4,32 @@ Definition of views.
 
 from django.shortcuts import render
 from django.http import HttpRequest
-from django.template import RequestContext
 from datetime import datetime
+
+from . import forms, models
+
 
 def home(request):
     """Renders the home page."""
     assert isinstance(request, HttpRequest)
+    if "POST" == request.method:
+        form = forms.AddImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            task = models.ResizeTask(image=request.FILES["image"], receive_time=datetime.now())
+            task.save()
+            # TODO: launch task in celery
+    else:
+        form = forms.AddImageForm()
+    tasks = models.ResizeTask.objects.all()
+
     return render(
         request,
         'app/index.html',
         {
-            'title':'Home Page',
-            'year':datetime.now().year,
+            'title': 'Home Page',
+            'tasks': tasks,
+            'form': form,
+            'year': datetime.now().year,
         }
     )
 
