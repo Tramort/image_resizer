@@ -5,9 +5,11 @@ Definition of urls for ImageResizer.
 from datetime import datetime
 from django.conf.urls import url
 import django.contrib.auth.views
+import django.views.static
 
 import app.forms
 import app.views
+import settings
 
 # Uncomment the next lines to enable the admin:
 # from django.conf.urls import include
@@ -37,6 +39,9 @@ urlpatterns = [
             'next_page': '/',
         },
         name='logout'),
+
+    url(r'^media/(?P<path>.*)$', django.views.static.serve, {
+        'document_root': settings.MEDIA_ROOT}),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
