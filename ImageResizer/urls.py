@@ -3,7 +3,7 @@ Definition of urls for ImageResizer.
 """
 
 from datetime import datetime
-from django.conf.urls import url
+from django.conf.urls import url, include
 import django.contrib.auth.views
 import django.views.static
 
@@ -42,6 +42,9 @@ urlpatterns = [
 
     url(r'^media/(?P<path>.*)$', django.views.static.serve, {
         'document_root': settings.MEDIA_ROOT}),
+
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/tasks/$', app.views.ResizeTaskList.as_view(), name="tasks-list"),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

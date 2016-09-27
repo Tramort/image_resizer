@@ -129,7 +129,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['media']))
 
-
+# celery
 import djcelery
 djcelery.setup_loader()
 
@@ -142,3 +142,7 @@ INSTALLED_APPS += ("djcelery","djkombu")
 
 TEST_RUNNER = "celery.contrib.test_runner.CeleryTestSuiteRunner"
 
+# rest api
+INSTALLED_APPS += (
+    'rest_framework',
+)

@@ -5,8 +5,9 @@ Definition of views.
 from django.shortcuts import render
 from django.http import HttpRequest
 from datetime import datetime
+from rest_framework import generics
 
-from . import forms, models, tasks
+from . import forms, models, tasks, serializers
 
 
 def home(request):
@@ -58,3 +59,10 @@ def about(request):
             'year':datetime.now().year,
         }
     )
+
+class ResizeTaskList(generics.ListCreateAPIView):
+    """
+    API endpoint that represents a list of resize tasks.
+    """
+    queryset = models.ResizeTask.objects.all()
+    serializer_class = serializers.ResizeTaskSerializer
