@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.http import HttpRequest
 from datetime import datetime
 
-from . import forms, models
+from . import forms, models, tasks
 
 
 def home(request):
@@ -20,14 +20,16 @@ def home(request):
             # TODO: launch task in celery
     else:
         form = forms.AddImageForm()
-    tasks = models.ResizeTask.objects.all()
+    resize_tasks = models.ResizeTask.objects.all()
+
+    tasks.test.delay()
 
     return render(
         request,
         'app/index.html',
         {
             'title': 'Home Page',
-            'tasks': tasks,
+            'tasks': resize_tasks,
             'form': form,
             'year': datetime.now().year,
         }
