@@ -17,12 +17,10 @@ def home(request):
         if form.is_valid():
             task = models.ResizeTask(image=request.FILES["image"], receive_time=datetime.now())
             task.save()
-            # TODO: launch task in celery
+            tasks.resize.delay(task.id)
     else:
         form = forms.AddImageForm()
-    resize_tasks = models.ResizeTask.objects.all()
-
-    tasks.test.delay()
+    resize_tasks = models.ResizeTask.objects.all().order_by("-id")
 
     return render(
         request,

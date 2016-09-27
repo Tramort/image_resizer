@@ -30,6 +30,19 @@
             <td>
                 {{ task.image }}
             </td>
+            <td>
+                <a href="{{ task.image.url }}"><img src="{{ task.image.url }}"/></a>
+            </td>
+            <td>
+                {% if task.converted_time %}
+                {{ task.converted_time }}
+                {% endif %}
+            </td>
+            <td>
+                {% if task.resized_image %}
+                <a href="{{ task.resized_image.url }}"><img src="{{ task.resized_image.url }}"/></a>
+                {% endif %}
+            </td>
         </tr>
     {% endfor%}
     </table>

@@ -4,19 +4,18 @@ when you run "manage.py test".
 """
 
 import django
+django.setup()
 from django.test import TestCase
+from app import tasks
 
 # TODO: Configure your database in settings.py and sync before running tests.
 
+# run celery task synchronous
+from django.conf import settings
+settings.CELERY_ALWAYS_EAGER = True
+
 class ViewTest(TestCase):
     """Tests for the application views."""
-
-    if django.VERSION[:2] >= (1, 7):
-        # Django 1.7 requires an explicit setup() when running tests in PTVS
-        @classmethod
-        def setUpClass(cls):
-            super(ViewTest, cls).setUpClass()
-            django.setup()
 
     def test_home(self):
         """Tests the home page."""
@@ -32,3 +31,9 @@ class ViewTest(TestCase):
         """Tests the about page."""
         response = self.client.get('/about')
         self.assertContains(response, 'About', 3, 200)
+
+    def test_resize_task(self):
+        """Tests resize task"""
+        result = tasks.resize.delay(1)
+        result.get()
+        self.assertTrue(result.successful())

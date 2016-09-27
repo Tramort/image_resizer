@@ -36,7 +36,7 @@
     <Compile Include="app\views.py" />
     <Compile Include="app\__init__.py" />
     <Compile Include="app\migrations\__init__.py" />
-    <Compile Include="ImageResizer\celery_test.py" />
+    <Compile Include="ImageResizer\celery.py" />
     <Compile Include="manage.py" />
     <Compile Include="ImageResizer\__init__.py" />
     <Compile Include="ImageResizer\settings.py" />
