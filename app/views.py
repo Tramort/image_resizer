@@ -66,3 +66,9 @@ class ResizeTaskList(generics.ListCreateAPIView):
     """
     queryset = models.ResizeTask.objects.all()
     serializer_class = serializers.ResizeTaskSerializer
+
+class ResizeTaskDetail(generics.RetrieveAPIView):
+    model = models.ResizeTask
+    queryset = models.ResizeTask.objects.all()
+    serializer_class = serializers.ResizeTaskSerializer
+    lookup_field = 'id'

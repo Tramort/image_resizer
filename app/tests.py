@@ -73,3 +73,8 @@ class AppApiTest(APITestCase, TestCase):
         if response.status_code != status.HTTP_201_CREATED:
             log.error(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)        
+
+    def test_api_one_task(self):
+        """Tests api get resize task"""
+        response = self.client.get(reverse('task-detail', kwargs={"id":1}), format='json')
+        self.assertEqual(response.status_code, 200)
