@@ -1,5 +1,10 @@
 {% extends "app/layout.html" %}
 
+{% block scripts %}
+    {% load staticfiles %}
+    <script src="{% static 'app/scripts/script.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 
 <div class="jumbotron">
@@ -16,19 +21,38 @@
     </p>
     <input type="submit" value="Upload">
 </form>
+{% verbatim  %}
+<script id="taskTmpl"  type="text/template">
+    <tr>
+        <td>
+            {{id}}
+        </td>
+        <td>
+            {{receive_time}}
+        </td>
+        <td>
+            <a href="{{image}}"><img src="{{image}}"/></a>
+        </td>
+        <td>
+            {{converted_time}}
+        </td>
+        <td>
+            <a href="{{resized_image}}"><img src="{{resized_image}}"/></a>
+        </td>
+    </tr>
+</script>
+{% endverbatim %}
+
 
 {% if tasks %}
-    <table>
-    {% for task in tasks %}        
+    <table id="taskTable">
+    {% for task in tasks %}
         <tr>
             <td>
                 {{ task.id }}
             </td>
             <td>
                 {{ task.receive_time }}
-            </td>
-            <td>
-                {{ task.image }}
             </td>
             <td>
                 <a href="{{ task.image.url }}"><img src="{{ task.image.url }}"/></a>

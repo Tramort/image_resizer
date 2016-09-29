@@ -6,20 +6,30 @@ when you run "manage.py test".
 import os
 import tempfile
 import logging as log
+import json
 
 import django
+
 django.setup()
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.core.files.uploadedfile import File
+from django.conf import settings
+# run celery task synchronous
+settings.BROKER_BACKEND = 'memory'
+settings.CELERY_ALWAYS_EAGER = True
+
 from rest_framework.test import APITestCase
 from rest_framework import status
+
+from channels import Group
+from channels.tests import ChannelTestCase
+
+from app import utils
 
 
 # TODO: Configure your database in settings.py and sync before running tests.
 
-# run celery task synchronous
-from django.conf import settings
-settings.CELERY_ALWAYS_EAGER = True
 
 
 class ViewTest(TestCase):
@@ -44,11 +54,11 @@ class ViewTest(TestCase):
         """Tests resize task"""
         from app import tasks
         result = tasks.resize.delay(1)
-        result.get()
+        result.wait(10)
         self.assertTrue(result.successful())
 
 class AppApiTest(APITestCase, TestCase):
-    """Tests for api"""
+    """Tests for rest api"""
 
     def test_api_tasks(self):
         """Tests api tasks list."""
@@ -57,24 +67,31 @@ class AppApiTest(APITestCase, TestCase):
 
     def test_api_task_create(self):
         """Tests api create resize task"""
-        from PIL import Image
-        import base64
-
-        image = Image.new('RGB', (100, 100))
-        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False)
-        image.save(tmp_file)
-        tmp_file.close()
-        tmp_file = open(tmp_file.name, "rb")
+        temp_image = utils.TempImageFile()
         response = self.client.post(reverse('tasks-list'),
-                                    data={'image': tmp_file},
+                                    data={'image': temp_image.file},
                                     format='multipart')
-        tmp_file.close()
-        os.unlink(tmp_file.name)
         if response.status_code != status.HTTP_201_CREATED:
             log.error(response.content)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_api_one_task(self):
         """Tests api get resize task"""
         response = self.client.get(reverse('task-detail', kwargs={"id":1}), format='json')
         self.assertEqual(response.status_code, 200)
+
+
+class WebsocketTest(ChannelTestCase, TestCase):
+    """Tests for websocket"""
+    def test_task_complete_notification(self):
+        """
+        Test for notification after resize task complete
+        """
+        Group("clients").add(u"test-channel")
+        temp_image = utils.TempImageFile()
+        from app import models
+        task = models.ResizeTask(image=File(temp_image.file))
+        task.save()
+        task.task_result.wait(10)
+        result = self.get_next_message(u"test-channel", require=True)
+        self.assertNotEqual(json.loads(result['text'])["resized_image"], None)

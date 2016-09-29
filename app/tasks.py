@@ -4,13 +4,15 @@ tasks for ImageResizer app
 import os
 from datetime import datetime
 import StringIO
+import json
 
 from ImageResizer.celery import app
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from app import models
 
+from app import models, serializers
+from channels.channel import Group
 
 @app.task(bind=True)
 def test(self):
@@ -46,4 +48,4 @@ def resize(self, task_id):
     task.converted_time = datetime.now()
     task.save()
 
-    # TODO: notify via websocket
+    Group('clients').send({"text": json.dumps(serializers.ResizeTaskSerializer(task).data)})

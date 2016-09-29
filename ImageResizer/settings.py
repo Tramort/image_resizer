@@ -135,10 +135,15 @@ djcelery.setup_loader()
 
 CELERYBEAT_SCHEDULER="djcelery.schedulers.DatabaseScheduler"
 CELERY_ALWAYS_EAGER=False
-#BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
-BROKER_BACKEND = 'memory'
+# use json format for everything
+#CELERY_ACCEPT_CONTENT = ['json']
+#CELERY_TASK_SERIALIZER = 'json'
+#CELERY_RESULT_SERIALIZER = 'json'
 
-INSTALLED_APPS += ("djcelery","djkombu")
+BROKER_URL = 'redis://localhost:6379/0'
+#BROKER_BACKEND = 'memory'
+
+INSTALLED_APPS += ("djcelery",)
 
 TEST_RUNNER = "celery.contrib.test_runner.CeleryTestSuiteRunner"
 
@@ -146,3 +151,18 @@ TEST_RUNNER = "celery.contrib.test_runner.CeleryTestSuiteRunner"
 INSTALLED_APPS += (
     'rest_framework',
 )
+
+# websocket
+INSTALLED_APPS += (
+    'channels',
+)
+
+CHANNEL_LAYERS = {
+    "default": {
+       "BACKEND": "asgi_redis.RedisChannelLayer",  # use redis backend
+       "CONFIG": {
+           "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],  # set redis address
+       },
+       "ROUTING": "ImageResizer.routing.channel_routing",
+    },
+}

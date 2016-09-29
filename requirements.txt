@@ -1,6 +1,5 @@
 Django==1.9
 celery==3.1.23
 django-celery
-kombu
-django-kombu
 djangorestframework
+channels
