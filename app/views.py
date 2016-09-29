@@ -16,9 +16,8 @@ def home(request):
     if "POST" == request.method:
         form = forms.AddImageForm(request.POST, request.FILES)
         if form.is_valid():
-            task = models.ResizeTask(image=request.FILES["image"], receive_time=datetime.now())
+            task = models.ResizeTask(image=request.FILES["image"])
             task.save()
-            tasks.resize.delay(task.id)
     else:
         form = forms.AddImageForm()
     resize_tasks = models.ResizeTask.objects.all().order_by("-id")
