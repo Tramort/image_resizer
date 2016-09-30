@@ -13,22 +13,13 @@ from . import forms, models, tasks, serializers
 def home(request):
     """Renders the home page."""
     assert isinstance(request, HttpRequest)
-    if "POST" == request.method:
-        form = forms.AddImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            task = models.ResizeTask(image=request.FILES["image"])
-            task.save()
-    else:
-        form = forms.AddImageForm()
     resize_tasks = models.ResizeTask.objects.all().order_by("-id")
-
     return render(
         request,
         'app/index.html',
         {
             'title': 'Home Page',
             'tasks': resize_tasks,
-            'form': form,
             'year': datetime.now().year,
         }
     )
