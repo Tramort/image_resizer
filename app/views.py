@@ -62,6 +62,9 @@ class ResizeTaskCreate(generics.CreateAPIView):
     serializer_class = serializers.ResizeTaskSerializer
 
 class ResizeTaskDetail(generics.RetrieveAPIView):
+    """
+    API endpoint to represent one resize task.
+    """
     model = models.ResizeTask
     queryset = models.ResizeTask.objects.all()
     serializer_class = serializers.ResizeTaskSerializer
