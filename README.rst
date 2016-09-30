@@ -21,4 +21,10 @@ Usage
 ------------
 .. code::
 
+  python manage.py celery
+  
+and  
+  
+.. code::
+
   python manage.py runserser
