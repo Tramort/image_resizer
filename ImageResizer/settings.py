@@ -148,6 +148,7 @@ INSTALLED_APPS += ("djcelery",)
 # rest api
 INSTALLED_APPS += (
     'rest_framework',
+    'rest_framework_docs',
 )
 
 # websocket
