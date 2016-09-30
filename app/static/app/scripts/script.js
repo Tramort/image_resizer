@@ -18,10 +18,24 @@ $(document).ready(function () {
     socket.onmessage = function (message) {
         console.log("socket.onmessage");
         var data = JSON.parse(message.data);
-        console.log(data);
         var table = $('#taskTable');
         var html = Mustache.to_html($('#taskTmpl').html(), data);
-        console.log(html);
         table.prepend(html);
     }
+
+    $('#img-upload-form').ajaxForm({
+        clearForm: true ,
+        beforeSubmit: function () {
+            return $("#img-upload-form").validate();
+        },
+        success: function (res, status, xhr, form) {
+            console.log(res);
+        },
+        error: function (data) {
+            console.log(data.responseText);
+            var r = jQuery.parseJSON(data.responseText);
+            alert(r.image[0]);
+        }
+    });
+
 })

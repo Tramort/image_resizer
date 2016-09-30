@@ -19,5 +19,5 @@ class BootstrapAuthenticationForm(AuthenticationForm):
 
 
 class AddImageForm(forms.Form):
-    """Add aimge form."""
-    image = forms.ImageField()
+    """Add image form."""
+    image = forms.ImageField(widget=forms.FileInput(attrs={ 'required': 'true' }))

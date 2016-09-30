@@ -68,7 +68,7 @@
     <Folder Include="ImageResizer\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\static\app\scripts\jquery.loadTemplate.js" />
+    <Content Include="app\static\app\scripts\jquery.form.js" />
     <Content Include="app\static\app\scripts\script.js" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
