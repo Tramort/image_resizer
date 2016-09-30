@@ -145,8 +145,6 @@ BROKER_URL = 'redis://localhost:6379/0'
 
 INSTALLED_APPS += ("djcelery",)
 
-TEST_RUNNER = "celery.contrib.test_runner.CeleryTestSuiteRunner"
-
 # rest api
 INSTALLED_APPS += (
     'rest_framework',
