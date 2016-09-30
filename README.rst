@@ -5,6 +5,8 @@ ImageResizer
 It's solution of test task.
 In brief, need to create service to decrease image by two times by using python, some libs and some technologies.
 
+For rest api docs used drfdocs generator (to see need to install and visit http://localhost:8000/docs).
+
 Installation
 ------------
 .. code::
@@ -28,3 +30,4 @@ and
 .. code::
 
   python manage.py runserser
+
