@@ -45,6 +45,7 @@ urlpatterns = [
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/tasks/$', app.views.ResizeTaskList.as_view(), name="tasks-list"),
+    url(r'^api/task/$', app.views.ResizeTaskCreate.as_view(), name="task-create"),
     url(r'^api/task/(?P<id>\d+)$', app.views.ResizeTaskDetail.as_view(), name="task-detail"),
 
     # Uncomment the admin/doc line below to enable admin documentation:

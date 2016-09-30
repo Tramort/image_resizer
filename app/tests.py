@@ -73,7 +73,7 @@ class AppApiTest(APITestCase, TestCase):
     def test_api_task_create(self):
         """Tests api create resize task"""
         temp_image = utils.TempImageFile()
-        response = self.client.post(reverse('tasks-list'),
+        response = self.client.post(reverse('task-create'),
                                     data={'image': temp_image.file},
                                     format='multipart')
         if response.status_code != status.HTTP_201_CREATED:

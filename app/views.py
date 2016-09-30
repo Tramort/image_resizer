@@ -48,11 +48,17 @@ def about(request):
         }
     )
 
-class ResizeTaskList(generics.ListCreateAPIView):
+class ResizeTaskList(generics.ListAPIView):
     """
     API endpoint that represents a list of resize tasks.
     """
     queryset = models.ResizeTask.objects.all()
+    serializer_class = serializers.ResizeTaskSerializer
+
+class ResizeTaskCreate(generics.CreateAPIView):
+    """
+    API endpoint create resize task.
+    """
     serializer_class = serializers.ResizeTaskSerializer
 
 class ResizeTaskDetail(generics.RetrieveAPIView):
