@@ -13,13 +13,11 @@ from . import forms, models, tasks, serializers
 def home(request):
     """Renders the home page."""
     assert isinstance(request, HttpRequest)
-    resize_tasks = models.ResizeTask.objects.all().order_by("-id")
     return render(
         request,
         'app/index.html',
         {
             'title': 'Home Page',
-            'tasks': resize_tasks,
             'year': datetime.now().year,
         }
     )

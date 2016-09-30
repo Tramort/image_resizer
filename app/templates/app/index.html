@@ -12,11 +12,19 @@
     <p class="lead">Decreasing image size by two times.</p>
 </div>
 
-<form action="/api/tasks/" method="post" enctype="multipart/form-data" id="img-upload-form">
-    {% csrf_token %}
-    <p>{{ form.as_table }}</p>
-    <input type="submit" value="Upload">
-</form>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form action="/api/tasks/" method="post" enctype="multipart/form-data" id="img-upload-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_image">Add image:</label>
+                <input id="id_image" name="image" required type="file" class="form-control">
+            </div>
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+</div>
+
 {% verbatim  %}
 <script id="taskTmpl"  type="text/template">
     <tr>
@@ -40,32 +48,22 @@
 {% endverbatim %}
 
 
-{% if tasks %}
-    <table id="taskTable">
-    {% for task in tasks %}
-        <tr>
-            <td>
-                {{ task.id }}
-            </td>
-            <td>
-                {{ task.receive_time }}
-            </td>
-            <td>
-                <a href="{{ task.image.url }}"><img src="{{ task.image.url }}"/></a>
-            </td>
-            <td>
-                {% if task.converted_time %}
-                {{ task.converted_time }}
-                {% endif %}
-            </td>
-            <td>
-                {% if task.resized_image %}
-                <a href="{{ task.resized_image.url }}"><img src="{{ task.resized_image.url }}"/></a>
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor%}
-    </table>
-{% endif %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <table class="table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Add time</th>
+                    <th>Source image</th>
+                    <th>Resize complete time</th>
+                    <th>Result image</th>
+                </tr>
+            </thead>
+            <tbody id="tasksTBody">
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}

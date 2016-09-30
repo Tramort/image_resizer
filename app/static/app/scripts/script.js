@@ -15,13 +15,29 @@ $(document).ready(function () {
         console.log('Error code: ' + event.code + ' reason: ' + event.reason);
     };
 
+    function add_task(task) {
+        console.log(task);
+        var table = $('#tasksTBody');
+        var html = Mustache.to_html($('#taskTmpl').html(), task);
+        table.prepend(html);
+    }
+
     socket.onmessage = function (message) {
         console.log("socket.onmessage");
         var data = JSON.parse(message.data);
-        var table = $('#taskTable');
-        var html = Mustache.to_html($('#taskTmpl').html(), data);
-        table.prepend(html);
+        add_task(data);
     }
+
+
+    $.ajax({
+        url: "/api/tasks/",
+        success: function (data, textStatus) {
+            console.log("Get tasks: " + textStatus)
+            data.forEach(function (task) {
+                add_task(task);
+            });
+        }
+    });
 
     $('#img-upload-form').ajaxForm({
         clearForm: true ,
