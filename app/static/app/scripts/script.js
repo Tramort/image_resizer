@@ -1,4 +1,5 @@
-﻿
+﻿var tasks = {};
+
 $(document).ready(function () {
     var socket = new WebSocket('ws://' + window.location.host + '/');
     
@@ -15,17 +16,28 @@ $(document).ready(function () {
         console.log('Error code: ' + event.code + ' reason: ' + event.reason);
     };
 
+    function refresh_table()
+    {
+        var table = $('#tasksTBody');
+        var templ = $('#taskTmpl').html();
+        table.html('');
+        for (var id in tasks) {
+            var html = Mustache.to_html(templ, tasks[id]);
+            table.prepend(html);
+        }
+    }
+
     function add_task(task) {
         console.log(task);
-        var table = $('#tasksTBody');
-        var html = Mustache.to_html($('#taskTmpl').html(), task);
-        table.prepend(html);
+        tasks[task.id] = task;
+
     }
 
     socket.onmessage = function (message) {
         console.log("socket.onmessage");
         var data = JSON.parse(message.data);
         add_task(data);
+        refresh_table();
     }
 
 
@@ -36,6 +48,7 @@ $(document).ready(function () {
             data.forEach(function (task) {
                 add_task(task);
             });
+            refresh_table();
         }
     });
 

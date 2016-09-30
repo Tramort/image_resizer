@@ -3,7 +3,10 @@ Definition of models.
 """
 
 from datetime import datetime
+import json
 from django.db import models
+from channels.channel import Group
+
 
 class ResizeTask(models.Model):
     """Table of tasks to resize images"""
@@ -18,6 +21,8 @@ class ResizeTask(models.Model):
         if not self.pk:
             self.receive_time = datetime.now()
             super(ResizeTask, self).save(*args, **kwargs)
+            from app import serializers
+            Group('clients').send({"text": json.dumps(serializers.ResizeTaskSerializer(self).data)})
             if run_task:
                 from app import tasks
                 self.task_result = tasks.resize.delay(self.id)

@@ -95,4 +95,5 @@ class WebsocketTest(ChannelTestCase, TestCase):
         task.save()
         task.task_result.wait(10)
         result = self.get_next_message(u"test-channel", require=True)
+        result = self.get_next_message(u"test-channel", require=True)
         self.assertNotEqual(json.loads(result['text'])["resized_image"], None)
