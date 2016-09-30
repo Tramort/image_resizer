@@ -3,7 +3,7 @@ ImageResizer
 ============
 
 It's solution of test task.
-In brief, need create service to decrease image by two times by using python, some libs and some technologies.
+In brief, need to create service to decrease image by two times by using python, some libs and some technologies.
 
 Installation
 ------------
