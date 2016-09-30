@@ -53,7 +53,12 @@ class ViewTest(TestCase):
     def test_resize_task(self):
         """Tests resize task"""
         from app import tasks
-        result = tasks.resize.delay(1)
+        from app import models
+
+        temp_image = utils.TempImageFile()
+        task = models.ResizeTask(image=File(temp_image.file))
+        task.save(run_task=False)
+        result = tasks.resize.delay(task.id)
         result.wait(10)
         self.assertTrue(result.successful())
 
@@ -75,9 +80,15 @@ class AppApiTest(APITestCase, TestCase):
             log.error(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_api_one_task(self):
+    def test_api_get_task(self):
         """Tests api get resize task"""
-        response = self.client.get(reverse('task-detail', kwargs={"id":1}), format='json')
+        from app import models
+
+        temp_image = utils.TempImageFile()
+        task = models.ResizeTask(image=File(temp_image.file))
+        task.save(run_task=False)
+
+        response = self.client.get(reverse('task-detail', kwargs={"id":task.id}), format='json')
         self.assertEqual(response.status_code, 200)
 
 

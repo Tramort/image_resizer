@@ -14,11 +14,12 @@ class ResizeTask(models.Model):
 
     task_result = None # seems only for tests
 
-    def save(self, *args, **kwargs):
+    def save(self, run_task=True, *args, **kwargs):
         if not self.pk:
             self.receive_time = datetime.now()
             super(ResizeTask, self).save(*args, **kwargs)
-            from app import tasks
-            self.task_result = tasks.resize.delay(self.id)
+            if run_task:
+                from app import tasks
+                self.task_result = tasks.resize.delay(self.id)
         else:
             super(ResizeTask, self).save(*args, **kwargs)
