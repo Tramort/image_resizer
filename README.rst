@@ -21,7 +21,7 @@ Usage
 ------------
 .. code::
 
-  python manage.py celery
+  python manage.py celery worker
   
 and  
   
