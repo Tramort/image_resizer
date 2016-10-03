@@ -5,10 +5,16 @@ ImageResizer
 It's solution of test task.
 In brief, need to create service to decrease image by two times by using python, some libs and some technologies.
 
+This app have rest api and support websocket connections.
 For rest api docs used drfdocs generator (to see need to install and visit http://localhost:8000/docs).
+
+Used libs: django, celery, channels, django rest framework and other.
+
 
 Installation
 ------------
+Use python 2.7
+
 .. code::
 
   git clone https://github.com/Tramort/image_resizer.git
