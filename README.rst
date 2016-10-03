@@ -13,7 +13,7 @@ Used libs: django, celery, channels, django rest framework and other.
 
 Installation
 ------------
-Use python 2.7
+Use python 2.7 or python 3.4+
 
 .. code::
 

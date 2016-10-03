@@ -9,7 +9,7 @@ import django.views.static
 
 import app.forms
 import app.views
-import settings
+from . import settings
 
 # Uncomment the next lines to enable the admin:
 # from django.conf.urls import include

@@ -3,13 +3,21 @@ tasks for ImageResizer app
 """
 import os
 from datetime import datetime
-import StringIO
 import json
 
 from ImageResizer.celery import app
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
-
+try: 
+    # python 2
+    from StringIO import StringIO as BuffIO
+    def buffio_len(buffio):
+        return buffio.len
+except ImportError:
+    # python 3
+    from io import BytesIO as BuffIO
+    def buffio_len(buffio):
+        return buffio.getbuffer().nbytes
 
 from app import models, serializers
 from channels.channel import Group
@@ -39,10 +47,11 @@ def resize(self, task_id):
     splited_name.insert(1, ".thumbnail.")
     image_name = "".join(splited_name)
 
-    temp_io = StringIO.StringIO()
+    temp_io = BuffIO()
     img.save(temp_io, format="JPEG")
 
-    image_file = InMemoryUploadedFile(temp_io, None, image_name, 'image/jpeg', temp_io.len, None)
+
+    image_file = InMemoryUploadedFile(temp_io, None, image_name, 'image/jpeg', buffio_len(temp_io), None)
 
     task.resized_image.save(image_name, image_file)
     task.converted_time = datetime.now()
