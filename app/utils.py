@@ -5,6 +5,7 @@ import os
 import tempfile
 from PIL import Image
 
+
 class TempImageFile:
     """
     Temporary image file

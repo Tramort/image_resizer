@@ -16,5 +16,7 @@ class ResizeTaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.ResizeTask
-        fields = ("id", "receive_time", "image", "resized_image", "converted_time",)
-        read_only_fields = ("id", "resized_image", "converted_time", "receive_time")
+        fields = ("id", "receive_time", "image", "resized_image",
+                  "converted_time",)
+        read_only_fields = ("id", "resized_image", "converted_time",
+                            "receive_time")

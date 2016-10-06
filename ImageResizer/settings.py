@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import posixpath
 
+import djcelery
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -89,18 +92,13 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.'
+             'UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.'
+             'CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.'
+             'NumericPasswordValidator'},
 ]
 
 
@@ -130,11 +128,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['media']))
 
 # celery
-import djcelery
 djcelery.setup_loader()
 
-CELERYBEAT_SCHEDULER="djcelery.schedulers.DatabaseScheduler"
-CELERY_ALWAYS_EAGER=False
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+CELERY_ALWAYS_EAGER = False
 CELERY_IGNORE_RESULT = True
 # use json format for everything
 CELERY_ACCEPT_CONTENT = ['json']
@@ -142,7 +139,6 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 BROKER_URL = 'redis://localhost:6379/0'
-#BROKER_BACKEND = 'memory'
 
 INSTALLED_APPS += ("djcelery",)
 
@@ -159,9 +155,9 @@ INSTALLED_APPS += (
 
 CHANNEL_LAYERS = {
     "default": {
-       "BACKEND": "asgi_redis.RedisChannelLayer",  # use redis backend
+       "BACKEND": "asgi_redis.RedisChannelLayer",
        "CONFIG": {
-           "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],  # set redis address
+           "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
        },
        "ROUTING": "ImageResizer.routing.channel_routing",
     },

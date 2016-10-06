@@ -8,26 +8,22 @@ import json
 from ImageResizer.celery import app
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
-try: 
+try:
     # python 2
     from StringIO import StringIO as BuffIO
+
     def buffio_len(buffio):
         return buffio.len
 except ImportError:
     # python 3
     from io import BytesIO as BuffIO
+
     def buffio_len(buffio):
         return buffio.getbuffer().nbytes
 
 from app import models, serializers
 from channels.channel import Group
 
-@app.task(bind=True)
-def test(self):
-    """
-    test task
-    """
-    print("is works!")
 
 @app.task(bind=True)
 def resize(self, task_id):
@@ -50,11 +46,13 @@ def resize(self, task_id):
     temp_io = BuffIO()
     img.save(temp_io, format="JPEG")
 
-
-    image_file = InMemoryUploadedFile(temp_io, None, image_name, 'image/jpeg', buffio_len(temp_io), None)
+    image_file = InMemoryUploadedFile(temp_io, None, image_name, 'image/jpeg',
+                                      buffio_len(temp_io), None)
 
     task.resized_image.save(image_name, image_file)
     task.converted_time = datetime.now()
     task.save()
 
-    Group('clients').send({"text": json.dumps(serializers.ResizeTaskSerializer(task).data)})
+    Group('clients').send({
+        "text": json.dumps(serializers.ResizeTaskSerializer(task).data)
+        })
