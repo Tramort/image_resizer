@@ -6,27 +6,63 @@ from datetime import datetime
 import json
 from django.db import models
 from channels.channel import Group
+from django.contrib.contenttypes.fields import GenericRelation
 
 
-class ResizeTask(models.Model):
+class AbstractImage(models.Model):
     """Table of tasks to resize images"""
-    image = models.ImageField()
-    resized_image = models.ImageField(null=True)
-    receive_time = models.DateTimeField()
-    converted_time = models.DateTimeField(null=True)
+    image = models.ImageField(blank=False)
+    time = models.DateTimeField()
 
-    task_result = None  # seems only for tests
+    def save(self, *args, **kwargs):
+        if not self.time:
+            self.time = datetime.now()
+        super(AbstractImage, self).save(*args, **kwargs)
+
+    class Meta:
+        abstract = True
+
+
+class ImageToResize(AbstractImage):
+    """Table of tasks to resize images"""
+    run_task = True
 
     def save(self, run_task=True, *args, **kwargs):
-        if not self.pk:
-            self.receive_time = datetime.now()
-            super(ResizeTask, self).save(*args, **kwargs)
+        if self._state.adding:
+            super(ImageToResize, self).save(*args, **kwargs)
+
             from app import serializers
             Group('clients').send({
-                "text": json.dumps(serializers.ResizeTaskSerializer(self).data)
+                "text": json.dumps(
+                    {
+                        "event": "img_added",
+                        "img": serializers.ImageToResizeSerializer(self).data
+                    })
                 })
-            if run_task:
+
+            if run_task and self.run_task:
                 from app import tasks
                 self.task_result = tasks.resize.delay(self.id)
+
         else:
-            super(ResizeTask, self).save(*args, **kwargs)
+            super(ImageToResize, self).save(*args, **kwargs)
+
+
+class ResizedImage(AbstractImage):
+    image_to_resize = models.OneToOneField(ImageToResize, on_delete=models.CASCADE,
+                                           primary_key=True, related_name='resized_image')
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            super(ResizedImage, self).save(*args, **kwargs)
+
+            from app import serializers
+            Group('clients').send({
+                "text": json.dumps(
+                    {
+                        "event": "img_resized",
+                        "img": serializers.ResizedImageSerializer(self).data
+                    })
+                })
+        else:
+            super(ResizedImage, self).save(*args, **kwargs)

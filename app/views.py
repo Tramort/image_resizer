@@ -22,24 +22,26 @@ def home(request):
         }
     )
 
+
 class ResizeTaskList(generics.ListAPIView):
     """
     API endpoint that represents a list of resize tasks.
     """
-    queryset = models.ResizeTask.objects.all()
-    serializer_class = serializers.ResizeTaskSerializer
+    queryset = models.ImageToResize.objects.select_related('resized_image').all()
+    serializer_class = serializers.FullResizeTaskSerializer
+
 
 class ResizeTaskCreate(generics.CreateAPIView):
     """
     API endpoint create resize task.
     """
-    serializer_class = serializers.ResizeTaskSerializer
+    serializer_class = serializers.ImageToResizeSerializer
+
 
 class ResizeTaskDetail(generics.RetrieveAPIView):
     """
     API endpoint to represent one resize task.
     """
-    model = models.ResizeTask
-    queryset = models.ResizeTask.objects.all()
-    serializer_class = serializers.ResizeTaskSerializer
+    queryset = models.ImageToResize.objects.select_related('resized_image').all()
+    serializer_class = serializers.FullResizeTaskSerializer
     lookup_field = 'id'

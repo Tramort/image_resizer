@@ -30,15 +30,14 @@ def resize(self, task_id):
     """
     resizing image
     """
-    task = models.ResizeTask.objects.get(id=task_id)
-    print(task.id, task.receive_time, task.image.path)
-
-    img = Image.open(task.image.path)
+    image_to_resize = models.ImageToResize.objects.get(id=task_id)
+    image_path = image_to_resize.image.path
+    img = Image.open(image_path)
     ratio = 0.5
     new_size = [int(i * ratio) for i in img.size]
     img.thumbnail(new_size, Image.ANTIALIAS)
 
-    image_name = os.path.basename(task.image.path)
+    image_name = os.path.basename(image_path)
     splited_name = image_name.rsplit('.', 1)
     splited_name.insert(1, ".thumbnail.")
     image_name = "".join(splited_name)
@@ -49,10 +48,6 @@ def resize(self, task_id):
     image_file = InMemoryUploadedFile(temp_io, None, image_name, 'image/jpeg',
                                       buffio_len(temp_io), None)
 
-    task.resized_image.save(image_name, image_file)
-    task.converted_time = datetime.now()
-    task.save()
-
-    Group('clients').send({
-        "text": json.dumps(serializers.ResizeTaskSerializer(task).data)
-        })
+    resized_image = models.ResizedImage(image_to_resize=image_to_resize,
+                                        image=image_file)
+    resized_image.save(force_insert=True)

@@ -36,7 +36,16 @@ $(document).ready(function () {
     socket.onmessage = function (message) {
         console.log("socket.onmessage");
         var data = JSON.parse(message.data);
-        add_task(data);
+        var event = data["event"];
+        if (event == "img_added") {
+            var img = data["img"];
+            tasks[img["id"]] = img;
+        }
+        else if (event == "img_resized") {
+            var img = data["img"];
+            tasks[img["image_to_resize"]]["resized_image"] = img;
+        }
+
         refresh_table();
     }
 
