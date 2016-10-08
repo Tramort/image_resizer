@@ -4,6 +4,7 @@ tasks for ImageResizer app
 import os
 from datetime import datetime
 import json
+import re
 
 from ImageResizer.celery import app
 from PIL import Image
@@ -37,10 +38,8 @@ def resize(self, task_id):
     new_size = [int(i * ratio) for i in img.size]
     img.thumbnail(new_size, Image.ANTIALIAS)
 
-    image_name = os.path.basename(image_path)
-    splited_name = image_name.rsplit('.', 1)
-    splited_name.insert(1, ".thumbnail.")
-    image_name = "".join(splited_name)
+    image_name = re.sub(r"(\.[^\.]+$)", r".thumbnail\1",
+                        os.path.basename(image_path))
 
     temp_io = BuffIO()
     img.save(temp_io, format="JPEG")
