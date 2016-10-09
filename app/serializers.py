@@ -19,11 +19,6 @@ class ResizedImageSerializer(ImageSerializer):
         model = models.ResizedImage
 
 
-class ResizedImageSerializer(ImageSerializer):
-    class Meta:
-        model = models.ResizedImage
-
-
 class ImageToResizeSerializer(ResizedImageSerializer):
     time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S",
                                      required=False, read_only=True)
