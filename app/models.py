@@ -2,7 +2,7 @@
 Definition of models.
 """
 
-from datetime import datetime
+from django.utils import timezone
 import json
 from django.db import models
 from channels.channel import Group
@@ -16,7 +16,7 @@ class AbstractImage(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.time:
-            self.time = datetime.now()
+            self.time = timezone.now()
         super(AbstractImage, self).save(*args, **kwargs)
 
     class Meta:
