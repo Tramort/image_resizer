@@ -112,6 +112,7 @@ class AppApiTest(APITestCase, TestCase):
                                        format='json')
         data = json.loads(response.content.decode(encoding=response.charset))
         self.assertNotEqual(data["time"], None)
+        self.assertNotEqual(data["image"], None)
         self.assertEqual(response.status_code, 200)
 
         from app import tasks
@@ -124,8 +125,7 @@ class AppApiTest(APITestCase, TestCase):
                                                kwargs={"id": image_to_resize.id}),
                                        format='json')
         data = json.loads(response.content.decode(encoding=response.charset))
-        print(data)
-        self.assertNotEqual(data["time"], None)
+        self.assertNotEqual(data["resized_image"]["time"], None)
         self.assertNotEqual(data["resized_image"]["image"], None)
         self.assertEqual(response.status_code, 200)
 
