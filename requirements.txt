@@ -4,5 +4,5 @@ Django==1.9.10
 django-celery==3.1.17
 djangorestframework==3.4.7
 drfdocs==0.0.11
-pillow==3.3.1
+pillow==3.3.2
 asgi_redis==0.14
