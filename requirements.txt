@@ -1,6 +1,6 @@
 celery==3.1.23
 channels==0.17.0
-Django==1.9.10
+Django==1.9.13
 django-celery==3.1.17
 djangorestframework==3.4.7
 drfdocs==0.0.11
